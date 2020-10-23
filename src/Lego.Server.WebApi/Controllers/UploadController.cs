@@ -26,10 +26,16 @@ namespace Lego.Server.WebApi.Controllers
             return await Task.FromResult<IActionResult>(Ok("It works!"));
         }
 
-        [HttpPost("files")]
-        [Produces("application/json")]
-        public async Task<IActionResult> Post(VideoFile file)
+        [HttpPost("info")]
+        public IActionResult PostFlag([FromBody]PermissionInfo info)
         {
+            return Ok(new {info.CanAccess});
+        }
+
+        [HttpPost("files")]
+        public async Task<IActionResult> Post([FromBody]VideoFile file)
+        {
+            var convertedFile = Convert.FromBase64String(file.Base64File);
             // Get the file from the POST request
             // var theFile = HttpContext.Request.Form.Files.GetFile("file");
 
@@ -50,9 +56,10 @@ namespace Lego.Server.WebApi.Controllers
             string link = Path.Combine(fileRoute, name);
 
             // Create directory if it dose not exist.
-            var dir = new FileInfo(fileRoute);
-            dir.Directory.Create();
-
+            // var dir = new FileInfo(fileRoute);
+            
+            Directory.CreateDirectory(fileRoute);
+            
             // Basic validation on mime types and file extension
             string[] videoMimetypes = {"video/mp4", "video/webm", "video/ogg"};
             string[] videoExt = {".mp4", ".webm", ".ogg"};
@@ -60,7 +67,7 @@ namespace Lego.Server.WebApi.Controllers
             try
             {
                 // Copy contents to memory stream.
-                var stream = new MemoryStream(file.bytes);
+                var stream = new MemoryStream(convertedFile);
                 stream.Position = 0;
                 var serverPath = link;
 

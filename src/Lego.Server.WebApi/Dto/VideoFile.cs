@@ -2,6 +2,6 @@ namespace Lego.Server.WebApi.Dto
 {
     public class VideoFile
     {
-        public byte[] bytes { get; set; }
+        public string Base64File { get; set; }
     }
 }

@@ -25,6 +25,7 @@ nupkg/
 x64/
 x86/
 build/
+src/Lego.Server.WebApi/wwwroot/
 bld/
 [Bb]in/
 [Oo]bj/
