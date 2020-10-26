@@ -8,9 +8,31 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
         <PackageReference Include="xunit" Version="2.4.0" />
+        <PackageReference Include="Shouldly" Version="3.0.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.9" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
         <PackageReference Include="coverlet.collector" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Update="Resources\videos.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>videos.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Resources\videos.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>videos.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\src\Lego.Server.WebApi\Lego.Server.WebApi.csproj" />
     </ItemGroup>
 
 </Project>
