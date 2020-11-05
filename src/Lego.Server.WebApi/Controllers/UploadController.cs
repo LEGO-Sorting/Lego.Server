@@ -82,6 +82,8 @@ namespace Lego.Server.WebApi.Controllers
                     await stream.CopyToAsync(writerFileStream);
                     writerFileStream.Dispose();
                 }
+                
+                // TODO Cut into frames 
 
                 // Return the file path as json
                 Hashtable videoUrl = new Hashtable();

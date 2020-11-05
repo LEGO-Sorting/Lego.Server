@@ -1,20 +1,31 @@
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Moq;
 
 namespace Lego.Server.IntegrationTests.Infrastructure
 {
     public class IntegrationTestsFixture<TStartup> : WebApplicationFactory<TStartup> where TStartup: class
     {
-        private string VideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../"), @"Resources/cup-01.mp4");
+        public Mock<IFormFile> Video { get; set; }
+        
+        public string VideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../"), @"Resources/cup-01.mp4");
+        public readonly string VideoFileName = "cup-01.mp4";
         private string UploadedVideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../../../"), @"src/Lego.Server.WebApi/wwwroot/uploads/");
         public HttpClient Client;
 
         public IntegrationTestsFixture()
         {
             Client = CreateClient();
+            Video = new Mock<IFormFile>();
+        }
+
+        public void LoadVideoToMemory()
+        {
         }
 
         public string ConvertVideoToBase64()
