@@ -28,21 +28,7 @@ namespace Lego.Server.IntegrationTests
         public async Task UploadFiles_WhenVideoIncluded_ShouldReturn200()
         {
             // Arrange
-            var stream = File.OpenRead(_fixture.VideoPath);
-            var videoFile = new FormFile(stream, 0, stream.Length, "file", Path.GetFileName(_fixture.VideoPath))
-            {
-                Headers = new HeaderDictionary(),
-                ContentType = "video/mp4"
-            };
-            var multipartContent = new MultipartFormDataContent();
-            multipartContent.Add(new StreamContent(videoFile.OpenReadStream())
-            {
-                Headers =
-                {
-                    ContentLength = videoFile.Length,
-                    ContentType = new MediaTypeHeaderValue(videoFile.ContentType)
-                },
-            }, "file", videoFile.FileName);
+            var multipartContent = _fixture.GetRequestContent();
 
             // Act
             var result =
@@ -50,6 +36,8 @@ namespace Lego.Server.IntegrationTests
             
             // Assert
             result.StatusCode.ShouldBe(HttpStatusCode.OK);
+            multipartContent.Headers.ContentType.MediaType.ShouldBe("multipart/form-data");
+            multipartContent.Headers.ContentLength.Value.ShouldBeGreaterThan(0);
         }
     }
 }
