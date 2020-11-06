@@ -17,6 +17,7 @@ namespace Lego.Server.IntegrationTests.Infrastructure
         public string VideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../"), @"Resources/cup-01.mp4");
         public readonly string VideoFileName = "cup-01.mp4";
         private string UploadedVideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../../../"), @"src/Lego.Server.WebApi/wwwroot/uploads/");
+        private string SplittedVideoPath = Path.Combine(System.IO.Path.GetFullPath(@"../../../../../"), @"src/Lego.Server.WebApi/wwwroot/pictures/");
         public HttpClient Client;
 
         public IntegrationTestsFixture()
@@ -24,21 +25,11 @@ namespace Lego.Server.IntegrationTests.Infrastructure
             Client = CreateClient();
             Video = new Mock<IFormFile>();
         }
-
-        public string ConvertVideoToBase64()
-        {
-            var bytes = File.ReadAllBytes(VideoPath);
-            return Convert.ToBase64String(bytes);
-        }
         
         protected override void Dispose(bool disposing)
         {
-            var di = new DirectoryInfo(UploadedVideoPath);
-
-            foreach (FileInfo file in di.GetFiles())
-            {
-                file.Delete(); 
-            }
+            File.Delete($"{UploadedVideoPath}/{VideoFileName}");
+            Directory.Delete(SplittedVideoPath, true);
             base.Dispose(disposing);
         }
 
@@ -55,6 +46,12 @@ namespace Lego.Server.IntegrationTests.Infrastructure
                 },
             }, "file", videoFile.FileName);
             return multipartContent;
+        }
+
+        public void FakeUploadVideo()
+        {
+            var destinationPath = Path.Combine(UploadedVideoPath, VideoFileName);
+            File.Copy(VideoPath,destinationPath);
         }
         
         private FormFile GetVideoFormFile()

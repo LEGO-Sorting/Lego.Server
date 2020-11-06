@@ -18,15 +18,21 @@ namespace Lego.Server.WebApi.Service
         public void SplitVideoIntoFrames(string imageId)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
-            var videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}.mp4");
-            var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{imageId}");
+            var videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}");
             
-            var file = MediaFile.Open(videoRoute);
-            for (int i = 0; i < file.Video.Info.FrameCount; i++)
+            var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{Path.GetFileNameWithoutExtension(imageId)}");
+            Directory.CreateDirectory(destinationDirectoryRoute);
+
+            try
             {
-                var frameFileRoute = Path.Combine(destinationDirectoryRoute, $"frame_{i}.png");
-                file.Video.ReadFrame(i).ToBitmap().Save(frameFileRoute);
+                var file = MediaFile.Open(videoRoute);
+                for (int i = 0; i < file.Video.Info.FrameCount; i++)
+                {
+                    var frameFileRoute = Path.Combine(destinationDirectoryRoute, $"frame_{i}.png");
+                    file.Video.ReadFrame(i).ToBitmap().Save(frameFileRoute);
+                }
             }
+            catch(EndOfStreamException) { }
         }
     }
     
