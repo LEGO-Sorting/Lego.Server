@@ -86,7 +86,7 @@ namespace Lego.Server.WebApi.Controllers
 
                 // Return the file path as json
                 Hashtable videoUrl = new Hashtable();
-                videoUrl.Add("link", "/uploads/" + name);
+                videoUrl.Add("imageId", Path.GetFileNameWithoutExtension(name));
 
                 return Json(videoUrl);
 
