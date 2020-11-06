@@ -5,11 +5,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="wwwroot\pictures" />
       <Folder Include="wwwroot\uploads" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
+        <PackageReference Include="FFMediaToolkit" Version="3.1.0" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
     </ItemGroup>
 
 </Project>

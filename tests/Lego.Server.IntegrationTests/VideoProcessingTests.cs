@@ -10,27 +10,28 @@ using Xunit;
 
 namespace Lego.Server.IntegrationTests
 {
-    public class UploadFiles : IClassFixture<IntegrationTestsFixture<Startup>>
+    public class VideoProcessingTests : IClassFixture<IntegrationTestsFixture<Startup>>
     {
         private readonly IntegrationTestsFixture<Startup> _fixture;
 
-        public UploadFiles(IntegrationTestsFixture<Startup> fixture)
+        public VideoProcessingTests(IntegrationTestsFixture<Startup> fixture)
         {
             _fixture = fixture;
         }
-        
+
         [Fact]
-        public async Task UploadFiles_WhenVideoIncluded_ShouldReturn200()
+        public async Task VideoProcessing_WhenVideoExists_ShouldReturn200()
         {
             // Arrange
-            var body = new VideoFile()
+            _fixture.FakeUploadVideo();
+            var body = new VideoProcess()
             {
-                Base64File = _fixture.ConvertVideoToBase64()
+                ImageName = _fixture.VideoFileName
             };
-
+            
             // Act
             var result =
-                await _fixture.Client.PostAsJsonAsync(new Uri("/api/upload/files", UriKind.RelativeOrAbsolute), body);
+                await _fixture.Client.PostAsJsonAsync(new Uri($"/api/processing/", UriKind.RelativeOrAbsolute), body);
             
             // Assert
             result.StatusCode.ShouldBe(HttpStatusCode.OK);

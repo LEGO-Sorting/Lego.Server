@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Lego.Server.WebApi.Dto;
+using Lego.Server.WebApi.Service;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
