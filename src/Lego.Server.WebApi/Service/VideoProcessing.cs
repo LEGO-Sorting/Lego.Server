@@ -25,7 +25,7 @@ namespace Lego.Server.WebApi.Service
 
             try
             {
-                var file = MediaFile.Open(videoRoute);
+                var file = MediaFile.Open($"{videoRoute}.mp4");
                 for (int i = 0; i < file.Video.Info.FrameCount; i++)
                 {
                     var frameFileRoute = Path.Combine(destinationDirectoryRoute, $"frame_{i}.png");
