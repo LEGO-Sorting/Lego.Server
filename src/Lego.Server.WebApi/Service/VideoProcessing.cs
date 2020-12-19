@@ -7,6 +7,7 @@ using FFMediaToolkit.Graphics;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.AspNetCore.Hosting;
+using SixLabors.ImageSharp.Formats;
 
 namespace Lego.Server.WebApi.Service
 {
@@ -23,16 +24,20 @@ namespace Lego.Server.WebApi.Service
             string webRootPath = _webHostEnvironment.WebRootPath;
             var videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}");
             
-            var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{Path.GetFileNameWithoutExtension(imageId)}");
-            Directory.CreateDirectory(destinationDirectoryRoute);
+            // var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{Path.GetFileNameWithoutExtension(imageId)}");
+            // Directory.CreateDirectory(destinationDirectoryRoute);
 
             try
             {
                 var file = MediaFile.Open($"{videoRoute}.mp4");
                 for (int i = 0; i < file.Video.Info.FrameCount; i++)
                 {
-                    var frameAsBitmap = file.Video.ReadFrame(i).Data.ToArray();
-                    SendPicture($"{imageId}_{i}", frameAsBitmap);
+                    var framePixels = file.Video.ReadFrame(i).ToBitmap();
+                    var ms = new MemoryStream();
+                    framePixels.SaveAsPng(ms);
+                    var frameAsPng = ms.ToArray();
+                
+                    SendPicture($"{imageId}_{i}", frameAsPng);
                 }
                 
             }
