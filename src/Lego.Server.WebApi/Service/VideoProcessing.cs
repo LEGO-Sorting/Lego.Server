@@ -1,9 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Runtime.InteropServices;
+using FFMediaToolkit;
 using FFMediaToolkit.Decoding;
 using FFMediaToolkit.Graphics;
+using FFmpeg.AutoGen;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +18,7 @@ namespace Lego.Server.WebApi.Service
     public class VideoProcessing
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private string _videoRoute;
         public VideoProcessing(IWebHostEnvironment env)
         {
             _webHostEnvironment = env;
@@ -22,15 +27,22 @@ namespace Lego.Server.WebApi.Service
         public void SplitVideoIntoFrames(string imageId)
         {
             string webRootPath = _webHostEnvironment.WebRootPath;
-            var videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}");
+            _videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}.mp4");
             
             // var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{Path.GetFileNameWithoutExtension(imageId)}");
             // Directory.CreateDirectory(destinationDirectoryRoute);
 
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var currentDirectory = $"{Environment.CurrentDirectory}\\bin\\Debug\\net5.0\\ffmpeg\\";
+                FFmpegLoader.FFmpegPath = currentDirectory;
+            }
+            
+            var file = MediaFile.Open(_videoRoute);
+            
             try
             {
-                var file = MediaFile.Open($"{videoRoute}.mp4");
-                for (int i = 0; i < file.Video.Info.FrameCount; i++)
+                for (int i = 0; i < file.Video.Info.NumberOfFrames; i++)
                 {
                     var framePixels = file.Video.ReadFrame(i).ToBitmap();
                     var ms = new MemoryStream();
@@ -39,9 +51,9 @@ namespace Lego.Server.WebApi.Service
                 
                     SendPicture($"{imageId}_{i}", frameAsPng);
                 }
-                
             }
             catch(EndOfStreamException) { }
+            File.Delete(_videoRoute);
         }
 
 
@@ -58,7 +70,6 @@ namespace Lego.Server.WebApi.Service
             formDataContent.Add(new StringContent(namePair.Value), namePair.Key);
 
             var response = await client.PostAsync("http://127.0.0.1:5002/predict", formDataContent);
-
         }
     }
     
