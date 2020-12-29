@@ -33,12 +33,6 @@ namespace Lego.Server.WebApi.Service
             // var destinationDirectoryRoute = Path.Combine(webRootPath, $"pictures/{Path.GetFileNameWithoutExtension(imageId)}");
             // Directory.CreateDirectory(destinationDirectoryRoute);
 
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
-                var currentDirectory = $"{Environment.CurrentDirectory}\\bin\\Debug\\net5.0\\ffmpeg\\";
-                FFmpegLoader.FFmpegPath = currentDirectory;
-            }
-            
             var file = MediaFile.Open(_videoRoute);
             
             try
