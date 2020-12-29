@@ -19,6 +19,7 @@ namespace Lego.Server.WebApi.Service
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private string _videoRoute;
+        private int _frameInterval = 15;
         public VideoProcessing(IWebHostEnvironment env)
         {
             _webHostEnvironment = env;
@@ -42,18 +43,23 @@ namespace Lego.Server.WebApi.Service
             
             try
             {
-                for (int i = 0; i < file.Video.Info.NumberOfFrames; i++)
+                int i = 0;
+                while (file.Video.TryReadNextFrame(out var imageData))
                 {
-                    var framePixels = file.Video.ReadFrame(i).ToBitmap();
+                    if (i % _frameInterval != 0)
+                    {
+                        i++;
+                        continue;
+                    }
+                    var framePixels = imageData.ToBitmap();
                     var ms = new MemoryStream();
                     framePixels.SaveAsPng(ms);
                     var frameAsPng = ms.ToArray();
-                
                     SendPicture($"{imageId}_{i}", frameAsPng);
+                    i++;
                 }
             }
             catch(EndOfStreamException) { }
-            File.Delete(_videoRoute);
         }
 
 
