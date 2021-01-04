@@ -49,7 +49,11 @@ namespace Lego.Server.WebApi.Service
                         continue;
                     }
                     var framePixels = imageData.ToBitmap();
-                    framePixels.Mutate(x => x.Resize(framePixels.Width/2, framePixels.Height/2));
+
+                    if (framePixels.Width > 1280 && framePixels.Height > 720)
+                    {
+                        framePixels.Mutate(x => x.Resize(framePixels.Width / 2, framePixels.Height / 2));
+                    }
                     var ms = new MemoryStream();
                     framePixels.SaveAsPng(ms);
                     var frameAsPng = ms.ToArray();
