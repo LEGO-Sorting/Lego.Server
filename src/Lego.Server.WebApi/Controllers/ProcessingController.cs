@@ -22,7 +22,7 @@ namespace Lego.Server.WebApi.Controllers
         public async Task<IActionResult> Post([FromBody] VideoProcess body)
         {
             var videoProcessing = new VideoProcessing(_webHostEnvironment);
-            videoProcessing.SplitVideoIntoFrames(body.ImageName);
+            videoProcessing.SplitVideoIntoFrames(body.ImageName, body.FramesInterval);
 
             Hashtable result = new Hashtable();
             result.Add("imageId", Path.GetFileNameWithoutExtension(body.ImageName));

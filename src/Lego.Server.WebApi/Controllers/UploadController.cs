@@ -37,6 +37,7 @@ namespace Lego.Server.WebApi.Controllers
 
         [Consumes("multipart/form-data")]
         [HttpPost("files")]
+        [DisableRequestSizeLimit]
         public async Task<IActionResult> Post([FromForm]List<IFormFile> file)
         {
             // Get the file from the POST request

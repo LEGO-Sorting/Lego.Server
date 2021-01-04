@@ -12,6 +12,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using Microsoft.AspNetCore.Hosting;
 using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
 
 namespace Lego.Server.WebApi.Service
 {
@@ -19,14 +20,16 @@ namespace Lego.Server.WebApi.Service
     {
         private readonly IWebHostEnvironment _webHostEnvironment;
         private string _videoRoute;
-        private int _frameInterval = 15;
+        private int _frameInterval;
+        private const int DefaultFrameInterval = 20;
         public VideoProcessing(IWebHostEnvironment env)
         {
             _webHostEnvironment = env;
         }
 
-        public void SplitVideoIntoFrames(string imageId)
+        public void SplitVideoIntoFrames(string imageId, int framesInterval)
         {
+            _frameInterval = framesInterval == default ? DefaultFrameInterval : framesInterval;
             string webRootPath = _webHostEnvironment.WebRootPath;
             _videoRoute = Path.Combine(webRootPath, $"uploads/{imageId}.mp4");
             
@@ -46,6 +49,7 @@ namespace Lego.Server.WebApi.Service
                         continue;
                     }
                     var framePixels = imageData.ToBitmap();
+                    framePixels.Mutate(x => x.Resize(framePixels.Width/2, framePixels.Height/2));
                     var ms = new MemoryStream();
                     framePixels.SaveAsPng(ms);
                     var frameAsPng = ms.ToArray();
