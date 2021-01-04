@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using FFMediaToolkit;
 using Lego.Server.WebApi.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,6 +42,12 @@ namespace Lego.Server.WebApi
             app.UseRouting();
 
             app.UseAuthorization();
+            
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                var currentDirectory = $"{Environment.CurrentDirectory}\\bin\\Debug\\net5.0\\ffmpeg\\";
+                FFmpegLoader.FFmpegPath = currentDirectory;
+            }
 
             app.UseEndpoints(endpoints =>
             {
