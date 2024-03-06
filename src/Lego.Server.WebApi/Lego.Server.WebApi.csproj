@@ -17,7 +17,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.7" />
         <PackageReference Include="FFMediaToolkit" Version="3.2.0" />
-        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.1" />
+        <PackageReference Include="SixLabors.ImageSharp" Version="2.1.7" />
     </ItemGroup>
 
 </Project>
